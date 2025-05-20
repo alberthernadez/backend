@@ -7,9 +7,10 @@ const connectDB = require("./Entrega-final/src/db/mongo");
 app.use(express.json());
 
 const productRoutes = require("./Entrega-final/src/routes/product.routes");
-//const cartRoutes = require("./Entrega-final/src/routes/cart.routes");
+const cartRoutes = require("./Entrega-final/src/routes/cart.routes");
+
 app.use("/api/products", productRoutes);
-//app.use("/api/carts", cartRoutes);
+app.use("/api/carts", cartRoutes);
 
 connectDB();
 

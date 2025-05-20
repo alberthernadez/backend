@@ -14,10 +14,37 @@ exports.createProduct = async (req, res) => {
 // Obtener todos los productos
 exports.getProducts = async (req, res) => {
     try {
-        const products = await Product.find();  
-        res.json(products);
+        const { category, stock, sort, page = 1, limit = 10 } = req.query;
+
+        const query = {};
+        if (category) query.category = category;
+        if (stock) query.stock = { $gte: Number(stock) };
+
+        const options = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            sort: {}
+        };
+
+        if (sort === "asc") options.sort.price = 1;
+        if (sort === "desc") options.sort.price = -1;
+
+        const products = await Product.find(query)
+            .sort(options.sort)
+            .skip((options.page - 1) * options.limit)
+            .limit(options.limit);
+
+        const total = await Product.countDocuments(query);
+        const totalPages = Math.ceil(total / options.limit);
+
+        res.json({
+            total,
+            page: options.page,
+            totalPages,
+            products
+        });
     } catch (error) {
-        res.status(500).json({ error: "error al obtener productos" });
+        res.status(500).json({ error: "Error al obtener productos con filtros" });
     }
 };
 
