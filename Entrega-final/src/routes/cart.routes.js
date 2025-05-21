@@ -1,21 +1,28 @@
-import express from "express";
-import { createCart,getCartById,addProductToCart,removeProductFromCart,clearCart, } from "../controllers/cartController.js";
-
+const express = require("express");
 const router = express.Router();
+const {
+    createCart,
+    getCartById,
+    addProductToCart,
+    removeProductFromCart,
+    clearCart,
+} = require("../controllers/cart.controller");
+const { permit } = require("../middlewares/authorization");
 
-//crea un carrito nuevo
+// Crear carrito
 router.post("/", createCart);
 
-//obtener carrito por ID
+// Obtener carrito por ID
 router.get("/:cid", getCartById);
 
-//agregar productos al carrito 
-router.post("/:cid/product/pid", addProductToCart)
+// Agregar producto al carrito (solo user)
+router.post("/:cid/product/:pid", permit("user"), addProductToCart);
 
-//eliminar producto al carrito 
+// Eliminar producto del carrito
 router.delete("/:cid/product/:pid", removeProductFromCart);
 
-//vaciar el carrito completo 
+// Vaciar carrito
 router.delete("/:cid", clearCart);
 
-export default router;
+module.exports = router;
+
