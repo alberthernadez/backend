@@ -1,5 +1,5 @@
 const ProductRepository = require("../repositories/product.repository");
-const ProductDTO = requiere("../../dto/producto.dto");
+const ProductDTO = require("../dto/product.dto");
 
 // Crear un producto
 exports.createProduct = async (req, res) => {
